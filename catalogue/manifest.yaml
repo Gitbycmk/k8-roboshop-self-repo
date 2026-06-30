@@ -3,10 +3,19 @@ kind: ConfigMap
 metadata:
   name: catalogue
   namespace: roboshop
+data:
+  MONGO: "true"
+  MONGO_URL: "mongodb://mongodb:27017/catalogue"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue
+  namespace: roboshop
   # these are replica set labels
   labels:
     project: roboshop
-    component: mongodb
+    component: catalogue
     tier: backend
 spec:
   replicas: 1
@@ -20,14 +29,13 @@ spec:
   template:
     metadata:
       labels:
-        # purpose: dp-demo
         project: roboshop
         component: catalogue
         tier: backend
     spec:
       containers:
       - name: catalogue
-        image: cloudcmk/catalogue:v1
+        image: joindevops/catalogue:v1
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
